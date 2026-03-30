@@ -16,14 +16,16 @@ skills/         Custom skills (slash commands)
 A `PreToolUse` hook that intercepts `git commit` when staged raster images (PNG, JPG, GIF, BMP, TIFF) are detected. It prompts the user to convert them to WEBP before committing, using [sharp](https://sharp.pixelplumbing.com/) for conversion. Favicons and SVGs are excluded automatically.
 
 **Files:**
-- `check-comitted-images.sh` — hook script that detects staged images and blocks the commit
+- `check-committed-images.sh` — hook script that detects staged images and blocks the commit
 - `optimize-images.mjs` — converts images to WEBP with configurable quality (default: 80)
 
 ## Skills
 
 ### fix-vulnerabilities
 
-A skill (`/fix-vulnerabilities`) that audits and fixes dependency vulnerabilities. It can target a specific CVE/advisory or run a full audit across JS/TS (`pnpm audit`) and Python (`uvx uv-secure`) projects. Each fix is committed atomically following `fix(deps):` conventions.
+A skill (`/fix-vulnerabilities`) that audits and fixes dependency vulnerabilities. It can target a specific CVE/advisory or run a full audit. Each fix is committed atomically following `fix(deps):` conventions.
+
+> **Note:** This skill is currently tailored for projects using **pnpm** (JS/TS) and **uv** (Python).
 
 **Usage:**
 ```
@@ -34,4 +36,44 @@ A skill (`/fix-vulnerabilities`) that audits and fixes dependency vulnerabilitie
 
 ## Installation
 
-Copy or symlink the desired hooks/skills into your Claude Code configuration directory (`~/.claude/`), then reference them from your `settings.json`.
+### Skills
+
+Copy or symlink the skill directory into your Claude Code skills folder:
+
+```
+~/.claude/skills/fix-vulnerabilities/
+  SKILL.md
+  VULNERABILITIES_GUIDELINES.md
+```
+
+Skills are automatically available as slash commands (e.g., `/fix-vulnerabilities`).
+
+### Hooks
+
+Copy or symlink the hook directory, then register it in your `settings.json` (global at `~/.claude/settings.json` or per-project at `.claude/settings.json`):
+
+```
+~/.claude/hooks/optimize-images/
+  check-committed-images.sh
+  optimize-images.mjs
+```
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/optimize-images/check-committed-images.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+See each hook's README for detailed setup instructions.

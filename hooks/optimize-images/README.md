@@ -25,7 +25,7 @@ Add the following hook to your `settings.json` (either `~/.claude/settings.json`
         "hooks": [
           {
             "type": "command",
-            "command": "bash /path/to/hooks/optimize-images/check-comitted-images.sh"
+            "command": "bash /path/to/hooks/optimize-images/check-committed-images.sh"
           }
         ]
       }

@@ -27,7 +27,8 @@ IMAGE_COUNT=$(echo "$STAGED_IMAGES" | wc -l | tr -d ' ')
 
 {
   echo ""
-  echo "Found $IMAGE_COUNT image file(s) staged for commit that may benefit from WEBP optimization:"  echo ""
+  echo "Found $IMAGE_COUNT image file(s) staged for commit that may benefit from WEBP optimization:"
+  echo ""
   while IFS= read -r img; do
     if [ -f "$img" ]; then
       SIZE=$(stat -f%z "$img" 2>/dev/null || stat -c%s "$img" 2>/dev/null)
