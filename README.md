@@ -6,6 +6,7 @@ Shareable configurations for [Claude Code](https://docs.anthropic.com/en/docs/cl
 
 ```
 hooks/          Reusable hook scripts
+rules/          Shareable project rules (drop into CLAUDE.md or .claude/rules/)
 skills/         Custom skills (slash commands)
 ```
 
@@ -32,7 +33,23 @@ A skill (`/fix-vulnerabilities`) that audits and fixes dependency vulnerabilitie
 /fix-vulnerabilities              # full audit
 ```
 
+## Rules
+
+### documentation-driven-development
+
+A rule that makes documentation a first-class part of the development workflow. Before implementing any change, review existing project documentation for context. After implementing, update documentation proportionally to the complexity and impact of the change.
+
 ## Installation
+
+### Rules
+
+Copy a rule file into your project's `.claude/rules/` directory, or paste its contents into your `CLAUDE.md`:
+
+```
+.claude/rules/documentation-driven-development.md
+```
+
+Rules in `.claude/rules/` are automatically loaded by Claude Code.
 
 ### Skills
 
