@@ -23,9 +23,7 @@ A `PreToolUse` hook that intercepts `git commit` when staged raster images (PNG,
 
 ### fix-vulnerabilities
 
-A skill (`/fix-vulnerabilities`) that audits and fixes dependency vulnerabilities. It can target a specific CVE/advisory or run a full audit. Each fix is committed atomically following `fix(deps):` conventions.
-
-> **Note:** This skill is currently tailored for projects using **pnpm** (JS/TS) and **uv** (Python).
+A skill (`/fix-vulnerabilities`) that audits and fixes dependency vulnerabilities. It can target a specific CVE/advisory or run a full audit. It auto-detects the project's package manager (npm, pnpm, yarn, uv) and applies the appropriate fix strategy. Each fix is committed atomically following `fix(deps):` conventions.
 
 **Usage:**
 ```
