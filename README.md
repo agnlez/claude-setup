@@ -2,13 +2,53 @@
 
 Shareable configurations for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) — skills, hooks, settings, and other reusable components that can be installed across projects.
 
+## Quick install
+
+Run the installer from any project directory. It opens an interactive menu of every available component:
+
+```
+curl -fsSL https://raw.githubusercontent.com/agnlez/claude-setup/main/install.sh | bash
+```
+
+Pick what you want, choose where it lands (global `~/.claude/` or project-local `.claude/`), and it will copy the files and merge any required `settings.json` entries idempotently.
+
+For scripted/CI use, skip the menu with flags:
+
+```
+# Install everything with defaults
+curl -fsSL https://raw.githubusercontent.com/agnlez/claude-setup/main/install.sh | bash -s -- --all --yes
+
+# Install just one skill
+curl -fsSL https://raw.githubusercontent.com/agnlez/claude-setup/main/install.sh | bash -s -- --skill=fix-vulnerabilities --yes
+
+# Project-local install of the hook
+curl -fsSL https://raw.githubusercontent.com/agnlez/claude-setup/main/install.sh | bash -s -- \
+  --component=hook:optimize-images --scope-default=project --project-root=. --yes
+
+# See all options
+curl -fsSL https://raw.githubusercontent.com/agnlez/claude-setup/main/install.sh | bash -s -- --help
+```
+
+Pin a specific tag/branch via `CLAUDE_SETUP_REF=v1.0 curl ... | bash` or `--ref=v1.0`.
+
+Requires `node >=18`, `bash`, and `curl`. After install, restart Claude Code so it picks up new hooks/skills.
+
 ## Structure
 
 ```
-hooks/          Reusable hook scripts
-rules/          Shareable project rules (drop into CLAUDE.md or .claude/rules/)
-skills/         Custom skills (slash commands)
+CLAUDE.template.md   Starter CLAUDE.md to copy into your own project root
+hooks/               Reusable hook scripts
+rules/               Shareable project rules (drop into CLAUDE.md or .claude/rules/)
+skills/              Custom skills (slash commands)
+install.sh           Bootstrap that downloads and runs the installer
+install.mjs          Node-based installer (selects, fetches, merges settings.json)
+manifest.json        Catalog of installable components (source of truth for the installer)
+installer/           Installer modules and smoke tests
 ```
+
+## Starter CLAUDE.md
+
+Copy `CLAUDE.template.md` to the root of your project as `CLAUDE.md`, then adapt the sections to your needs. It comes pre-populated with the rules from this repo so you can prune what you don't want and add your own on top.
 
 ## Hooks
 
@@ -39,7 +79,9 @@ A skill (`/fix-vulnerabilities`) that audits and fixes dependency vulnerabilitie
 
 A rule that makes documentation a first-class part of the development workflow. Before implementing any change, review existing project documentation for context. After implementing, update documentation proportionally to the complexity and impact of the change.
 
-## Installation
+## Manual installation (alternative)
+
+Skip the installer and copy files yourself if you prefer.
 
 ### Rules
 

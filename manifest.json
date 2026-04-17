@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "repo": {
+    "owner": "agnlez",
+    "name": "claude-setup",
+    "ref": "main"
+  },
+  "components": [
+    {
+      "id": "hook:optimize-images",
+      "type": "hook",
+      "name": "optimize-images",
+      "description": "Pre-commit hook that converts staged raster images to WEBP.",
+      "files": [
+        {
+          "src": "hooks/optimize-images/check-committed-images.sh",
+          "dst": "hooks/optimize-images/check-committed-images.sh",
+          "mode": "0755"
+        },
+        {
+          "src": "hooks/optimize-images/optimize-images.mjs",
+          "dst": "hooks/optimize-images/optimize-images.mjs",
+          "mode": "0755"
+        }
+      ],
+      "scopes": ["global", "project"],
+      "defaultScope": "global",
+      "settingsPatch": {
+        "path": ["hooks", "PreToolUse"],
+        "matcherKey": "matcher",
+        "matcher": "Bash",
+        "entry": {
+          "type": "command",
+          "command": "bash {{installRoot}}/hooks/optimize-images/check-committed-images.sh"
+        },
+        "dedupKey": "command"
+      },
+      "requires": { "node": ">=18" }
+    },
+    {
+      "id": "skill:fix-vulnerabilities",
+      "type": "skill",
+      "name": "fix-vulnerabilities",
+      "description": "/fix-vulnerabilities slash command for auditing and fixing dependency vulnerabilities.",
+      "files": [
+        {
+          "src": "skills/fix-vulnerabilities/SKILL.md",
+          "dst": "skills/fix-vulnerabilities/SKILL.md"
+        },
+        {
+          "src": "skills/fix-vulnerabilities/VULNERABILITIES_GUIDELINES.md",
+          "dst": "skills/fix-vulnerabilities/VULNERABILITIES_GUIDELINES.md"
+        }
+      ],
+      "scopes": ["global", "project"],
+      "defaultScope": "global"
+    },
+    {
+      "id": "rule:documentation-driven-development",
+      "type": "rule",
+      "name": "documentation-driven-development",
+      "description": "Treat documentation as a first-class part of the development workflow.",
+      "files": [
+        {
+          "src": "rules/documentation-driven-development.md",
+          "dst": "rules/documentation-driven-development.md"
+        }
+      ],
+      "scopes": ["project"],
+      "defaultScope": "project"
+    },
+    {
+      "id": "template:claude-md",
+      "type": "template",
+      "name": "CLAUDE.md starter",
+      "description": "Starter CLAUDE.md for the project root, pre-populated with this repo's rules.",
+      "files": [
+        {
+          "src": "CLAUDE.template.md",
+          "dst": "CLAUDE.md"
+        }
+      ],
+      "scopes": ["projectRoot"],
+      "defaultScope": "projectRoot",
+      "conflictPolicy": "neverOverwrite"
+    }
+  ]
+}
