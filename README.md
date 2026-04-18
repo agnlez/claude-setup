@@ -10,7 +10,7 @@ Run the installer from any project directory. It opens an interactive menu of ev
 curl -fsSL https://raw.githubusercontent.com/agnlez/claude-setup/main/install.sh | bash
 ```
 
-Pick what you want, choose where it lands (global `~/.claude/` or project-local `.claude/`), and it will copy the files and merge any required `settings.json` entries idempotently.
+Choose where components should land (global `~/.claude/` or project-local `.claude/`), pick the ones you want, and the installer copies files and merges any required `settings.json` entries idempotently.
 
 For scripted/CI use, skip the menu with flags:
 

@@ -52,17 +52,16 @@ function renderComponentList(components, selected) {
   });
 }
 
-export async function pickScope(component, defaultScope, ask) {
-  if (component.scopes.length === 1) return component.scopes[0];
-  const labels = component.scopes.map((s) => (s === defaultScope ? `(${s.toUpperCase()})` : s)).join(' / ');
-  const answer = (await ask(`  Scope for '${component.id}' [${labels}, default ${defaultScope}]: `)).trim();
-  if (answer === '') return defaultScope;
-  const match = component.scopes.find((s) => s.toLowerCase().startsWith(answer.toLowerCase()));
-  if (!match) {
-    console.log(`  Invalid scope, using default '${defaultScope}'`);
-    return defaultScope;
+export async function pickDefaultScope(ask) {
+  console.log('\nWhere should components be installed?');
+  console.log('  1) global  - user level (~/.claude/, applies across all projects)');
+  console.log('  2) project - this project only (.claude/ in the project root)');
+  for (;;) {
+    const answer = (await ask('Choose [1/2, default 1]: ')).trim().toLowerCase();
+    if (answer === '' || answer === '1' || answer === 'g' || answer === 'global' || answer === 'user') return 'global';
+    if (answer === '2' || answer === 'p' || answer === 'project') return 'project';
+    console.log(`  Invalid choice '${answer}'. Enter 1, 2, or press Enter for global.`);
   }
-  return match;
 }
 
 export async function pickProjectRoot(defaultRoot, ask) {

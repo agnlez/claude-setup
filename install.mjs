@@ -7,7 +7,7 @@ import { loadManifest, findComponent } from './installer/manifest.mjs';
 import { fetchBytes, rawUrl } from './installer/fetch.mjs';
 import { scopeRoot, settingsPath } from './installer/paths.mjs';
 import { mergeSettings } from './installer/merge-settings.mjs';
-import { createPrompt, pickComponents, pickScope, pickProjectRoot, confirm } from './installer/prompt.mjs';
+import { createPrompt, pickComponents, pickDefaultScope, pickProjectRoot, confirm } from './installer/prompt.mjs';
 
 const VERSION = '0.1.0';
 
@@ -27,6 +27,10 @@ async function main(argv) {
   const prompt = interactive ? createPrompt() : null;
 
   try {
+    if (interactive && !flags.scopeDefault) {
+      flags.scopeDefault = await pickDefaultScope(prompt.ask);
+    }
+
     const projectRoot = path.resolve(
       flags.projectRoot ??
         (interactive ? await pickProjectRoot(process.cwd(), prompt.ask) : process.cwd())
@@ -38,7 +42,7 @@ async function main(argv) {
       return 0;
     }
 
-    const plan = await buildPlan(manifest, selected, flags, prompt, projectRoot);
+    const plan = buildPlan(manifest, selected, flags, projectRoot);
 
     printPlan(plan, flags);
     if (!flags.yes && interactive) {
@@ -93,11 +97,11 @@ async function selectComponents(manifest, flags, prompt) {
   return pickComponents(manifest.components, prompt.ask);
 }
 
-async function buildPlan(manifest, selected, flags, prompt, projectRoot) {
+function buildPlan(manifest, selected, flags, projectRoot) {
   const actions = [];
 
   for (const component of selected) {
-    const scope = await resolveScope(component, flags, prompt);
+    const scope = resolveScope(component, flags);
     const installRoot = scopeRoot(scope, projectRoot);
     const conflictPolicy = component.conflictPolicy ?? 'overwriteWithBackup';
 
@@ -133,7 +137,7 @@ async function buildPlan(manifest, selected, flags, prompt, projectRoot) {
   return { actions, projectRoot };
 }
 
-async function resolveScope(component, flags, prompt) {
+function resolveScope(component, flags) {
   const override = flags.scopeOverrides[component.id];
   if (override) {
     if (!component.scopes.includes(override)) {
@@ -141,11 +145,9 @@ async function resolveScope(component, flags, prompt) {
     }
     return override;
   }
-  const baseDefault = flags.scopeDefault && component.scopes.includes(flags.scopeDefault)
+  return flags.scopeDefault && component.scopes.includes(flags.scopeDefault)
     ? flags.scopeDefault
     : component.defaultScope;
-  if (!prompt || flags.all || flags.components.length > 0) return baseDefault;
-  return pickScope(component, baseDefault, prompt.ask);
 }
 
 function detectConflict(dst, policy, flags) {
