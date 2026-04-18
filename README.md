@@ -31,7 +31,7 @@ curl -fsSL https://raw.githubusercontent.com/agnlez/claude-setup/main/install.sh
 
 Pin a specific tag/branch via `CLAUDE_SETUP_REF=v1.0 curl ... | bash` or `--ref=v1.0`.
 
-Requires `node >=18`, `bash`, and `curl`. After install, restart Claude Code so it picks up new hooks/skills.
+Requires `node >=18`, `bash`, `curl`, and `tar`. After install, restart Claude Code so it picks up new hooks/skills.
 
 ## Structure
 
